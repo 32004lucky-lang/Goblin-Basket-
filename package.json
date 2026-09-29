@@ -1,0 +1,15 @@
+{
+  "name": "tomato-code-root",
+  "version": "1.0.0",
+  "description": "Root orchestrator for Tomato Code services",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm install --prefix frontend && npm install --prefix services/admin && npm install --prefix services/auth && npm install --prefix services/realtime && npm install --prefix services/restaurant && npm install --prefix services/rider && npm install --prefix services/utils",
+    "dev:all": "concurrently -n \"frontend,admin,auth,realtime,restaurant,rider,utils\" -c \"cyan,magenta,blue,yellow,green,red,gray\" \"npm run dev --prefix frontend\" \"npm run dev --prefix services/admin\" \"npm run dev --prefix services/auth\" \"npm run dev --prefix services/realtime\" \"npm run dev --prefix services/restaurant\" \"npm run dev --prefix services/rider\" \"npm run dev --prefix services/utils\"",
+    "dev:services": "concurrently -n \"admin,auth,realtime,restaurant,rider,utils\" -c \"magenta,blue,yellow,green,red,gray\" \"npm run dev --prefix services/admin\" \"npm run dev --prefix services/auth\" \"npm run dev --prefix services/realtime\" \"npm run dev --prefix services/restaurant\" \"npm run dev --prefix services/rider\" \"npm run dev --prefix services/utils\"",
+    "dev:frontend": "npm run dev --prefix frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

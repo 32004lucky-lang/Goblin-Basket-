@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --gb-forest: #2E6327;
+    --gb-forest-dark: #224b1d;
+    --gb-bright: #8FD14F;
+    --gb-bright-hover: #7DBB3A;
+    --gb-gold: #C98B2C;
+    --gb-orange: #D95D24;
+    --gb-parchment: #F8F6F0;
+    --gb-charcoal: #1C1A17;
+    --gb-text-dark: #1A1A1A;
+    --gb-text-body: #3D443E;
+    --gb-border: #E2E6DF;
+    --gb-badge-bg: #EAF5E4;
+  }
+
+  body {
+    background-color: var(--gb-parchment);
+    color: var(--gb-text-body);
+    font-family: 'Inter', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Fredoka', cursive, sans-serif;
+    color: var(--gb-text-dark);
+  }
+}
+
+/* Custom UI Utility Styles */
+.btn-primary {
+  background-color: var(--gb-forest);
+  color: #ffffff;
+  border-radius: 9999px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(46, 99, 39, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: var(--gb-forest-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(46, 99, 39, 0.4);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-vibrant {
+  background-color: var(--gb-bright);
+  color: var(--gb-charcoal);
+  border-radius: 9999px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(143, 209, 79, 0.4);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-vibrant:hover {
+  background-color: var(--gb-bright-hover);
+  transform: translateY(-1px);
+}
+
+.card-gb {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid var(--gb-border);
+  box-shadow: 0 4px 12px rgba(28, 26, 23, 0.04);
+  transition: all 0.2s ease-in-out;
+}
+
+.card-gb:hover {
+  box-shadow: 0 8px 24px rgba(28, 26, 23, 0.08);
+}
+
+.badge-gb {
+  background-color: var(--gb-badge-bg);
+  color: var(--gb-forest);
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1efea;
+}
+::-webkit-scrollbar-thumb {
+  background: #c3d6c0;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2E6327;
+}

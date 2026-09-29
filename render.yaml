@@ -1,0 +1,179 @@
+services:
+  # ─────────────────────────────────────────────
+  # FRONTEND  (Static Site)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    rootDir: frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_AUTH_SERVICE
+        sync: false
+      - key: VITE_RESTAURANT_SERVICE
+        sync: false
+      - key: VITE_UTILS_SERVICE
+        sync: false
+      - key: VITE_REALTIME_SERVICE
+        sync: false
+      - key: VITE_RIDER_SERVICE
+        sync: false
+      - key: VITE_ADMIN_SERVICE
+        sync: false
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_INTERNAL_SERVICE_KEY
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # AUTH SERVICE
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-auth
+    runtime: docker
+    dockerfilePath: services/auth/Dockerfile
+    dockerContext: services/auth
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SEC
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # RESTAURANT SERVICE
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-restaurant
+    runtime: docker
+    dockerfilePath: services/restaurant/Dockerfile
+    dockerContext: services/restaurant
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SEC
+        sync: false
+      - key: UTILS_SERVICE
+        sync: false
+      - key: REALTIME_SERVICE
+        sync: false
+      - key: INTERNAL_SERVICE_KEY
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: PAYMENT_QUEUE
+        value: payment_event
+      - key: RIDER_QUEUE
+        value: rider_queue
+      - key: ORDER_READY_QUEUE
+        value: order_ready_queue
+
+  # ─────────────────────────────────────────────
+  # UTILS SERVICE
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-utils
+    runtime: docker
+    dockerfilePath: services/utils/Dockerfile
+    dockerContext: services/utils
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: CLOUD_NAME
+        sync: false
+      - key: CLOUD_API_KEY
+        sync: false
+      - key: CLOUD_SECRET_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: RESTAURANT_SERVICE
+        sync: false
+      - key: INTERNAL_SERVICE_KEY
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: PAYMENT_QUEUE
+        value: payment_event
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # REALTIME SERVICE  (Socket.io)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-realtime
+    runtime: docker
+    dockerfilePath: services/realtime/Dockerfile
+    dockerContext: services/realtime
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: JWT_SEC
+        sync: false
+      - key: INTERNAL_SERVICE_KEY
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # RIDER SERVICE
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-rider
+    runtime: docker
+    dockerfilePath: services/rider/Dockerfile
+    dockerContext: services/rider
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SEC
+        sync: false
+      - key: UTILS_SERVICE
+        sync: false
+      - key: REALTIME_SERVICE
+        sync: false
+      - key: RESTAURANT_SERVICE
+        sync: false
+      - key: INTERNAL_SERVICE_KEY
+        sync: false
+      - key: RABBITMQ_URL
+        sync: false
+      - key: RIDER_QUEUE
+        value: rider_queue
+      - key: ORDER_READY_QUEUE
+        value: order_ready_queue
+
+  # ─────────────────────────────────────────────
+  # ADMIN SERVICE
+  # ─────────────────────────────────────────────
+  - type: web
+    name: goblin-basket-admin
+    runtime: docker
+    dockerfilePath: services/admin/Dockerfile
+    dockerContext: services/admin
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SEC
+        sync: false
+      - key: DB_NAME
+        value: Zomato_Clone

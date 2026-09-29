@@ -1,0 +1,12 @@
+import express from "express";
+import { addUserRole, loginUser, registerUser, myProfile } from "../controllers/auth.js";
+import { isAuth } from "../middlewares/isAuth.js";
+
+const router = express.Router();
+
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.put("/add/role", isAuth, addUserRole);
+router.get("/me", isAuth, myProfile);
+
+export default router;
