@@ -1,6 +1,32 @@
+# ==============================================================================
+# Goblin Basket - Render Infrastructure as Code (render.yaml)
+# ==============================================================================
+# Auto-wires shared environment groups, ports, and internal routing.
+# ==============================================================================
+
+envVarGroups:
+  - name: goblin-shared-secrets
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://32004lucky_db_user:password_here@cluster0.c3ernby.mongodb.net/goblin_basket?retryWrites=true&w=majority
+      - key: RABBITMQ_URL
+        value: amqps://dwioqrcw:LjJHIMLR_AR7W1zSSb3GMI0cb6gxD5jc@warthog.lmq.cloudamqp.com/dwioqrcw
+      - key: JWT_SEC
+        value: 9f4a8b1c7e62d5f084a3c1e92d8f7b5a1c6e3d2f9b8a7c4e5d6f1a2b3c4d5e6f
+      - key: INTERNAL_SERVICE_KEY
+        value: gb_sec_9d3e8f7a1b4c6e2d5f0a8c1e4b7a9d2f6c8e1a3b5d7f
+      - key: PAYMENT_QUEUE
+        value: payment_event
+      - key: RIDER_QUEUE
+        value: rider_queue
+      - key: ORDER_READY_QUEUE
+        value: order_ready_queue
+      - key: DB_NAME
+        value: Zomato_Clone
+
 services:
   # ─────────────────────────────────────────────
-  # FRONTEND  (Static Site)
+  # FRONTEND (Static Site)
   # ─────────────────────────────────────────────
   - type: web
     name: goblin-basket-frontend
@@ -14,21 +40,39 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_AUTH_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-auth
+          property: host
       - key: VITE_RESTAURANT_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-restaurant
+          property: host
       - key: VITE_UTILS_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-utils
+          property: host
       - key: VITE_REALTIME_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-realtime
+          property: host
       - key: VITE_RIDER_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-rider
+          property: host
       - key: VITE_ADMIN_SERVICE
-        sync: false
-      - key: VITE_STRIPE_PUBLISHABLE_KEY
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-admin
+          property: host
       - key: VITE_INTERNAL_SERVICE_KEY
-        sync: false
+        value: gb_sec_9d3e8f7a1b4c6e2d5f0a8c1e4b7a9d2f6c8e1a3b5d7f
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        value: pk_test_placeholder
 
   # ─────────────────────────────────────────────
   # AUTH SERVICE
@@ -41,14 +85,7 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SEC
-        sync: false
-      - key: GOOGLE_CLIENT_ID
-        sync: false
-      - key: GOOGLE_CLIENT_SECRET
-        sync: false
+      - fromGroup: goblin-shared-secrets
 
   # ─────────────────────────────────────────────
   # RESTAURANT SERVICE
@@ -61,24 +98,17 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SEC
-        sync: false
+      - fromGroup: goblin-shared-secrets
       - key: UTILS_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-utils
+          property: host
       - key: REALTIME_SERVICE
-        sync: false
-      - key: INTERNAL_SERVICE_KEY
-        sync: false
-      - key: RABBITMQ_URL
-        sync: false
-      - key: PAYMENT_QUEUE
-        value: payment_event
-      - key: RIDER_QUEUE
-        value: rider_queue
-      - key: ORDER_READY_QUEUE
-        value: order_ready_queue
+        fromService:
+          type: web
+          name: goblin-basket-realtime
+          property: host
 
   # ─────────────────────────────────────────────
   # UTILS SERVICE
@@ -91,31 +121,28 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: CLOUD_NAME
-        sync: false
-      - key: CLOUD_API_KEY
-        sync: false
-      - key: CLOUD_SECRET_KEY
-        sync: false
-      - key: STRIPE_SECRET_KEY
-        sync: false
+      - fromGroup: goblin-shared-secrets
       - key: FRONTEND_URL
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-frontend
+          property: host
       - key: RESTAURANT_SERVICE
-        sync: false
-      - key: INTERNAL_SERVICE_KEY
-        sync: false
-      - key: RABBITMQ_URL
-        sync: false
-      - key: PAYMENT_QUEUE
-        value: payment_event
-      - key: RAZORPAY_KEY_ID
-        sync: false
-      - key: RAZORPAY_KEY_SECRET
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-restaurant
+          property: host
+      - key: CLOUD_NAME
+        value: demo_cloud
+      - key: CLOUD_API_KEY
+        value: demo_key
+      - key: CLOUD_SECRET_KEY
+        value: demo_secret
+      - key: STRIPE_SECRET_KEY
+        value: sk_test_placeholder
 
   # ─────────────────────────────────────────────
-  # REALTIME SERVICE  (Socket.io)
+  # REALTIME SERVICE (Socket.io)
   # ─────────────────────────────────────────────
   - type: web
     name: goblin-basket-realtime
@@ -125,10 +152,7 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: JWT_SEC
-        sync: false
-      - key: INTERNAL_SERVICE_KEY
-        sync: false
+      - fromGroup: goblin-shared-secrets
 
   # ─────────────────────────────────────────────
   # RIDER SERVICE
@@ -141,24 +165,22 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SEC
-        sync: false
+      - fromGroup: goblin-shared-secrets
       - key: UTILS_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-utils
+          property: host
       - key: REALTIME_SERVICE
-        sync: false
+        fromService:
+          type: web
+          name: goblin-basket-realtime
+          property: host
       - key: RESTAURANT_SERVICE
-        sync: false
-      - key: INTERNAL_SERVICE_KEY
-        sync: false
-      - key: RABBITMQ_URL
-        sync: false
-      - key: RIDER_QUEUE
-        value: rider_queue
-      - key: ORDER_READY_QUEUE
-        value: order_ready_queue
+        fromService:
+          type: web
+          name: goblin-basket-restaurant
+          property: host
 
   # ─────────────────────────────────────────────
   # ADMIN SERVICE
@@ -171,9 +193,4 @@ services:
     envVars:
       - key: PORT
         value: 10000
-      - key: MONGO_URI
-        sync: false
-      - key: JWT_SEC
-        sync: false
-      - key: DB_NAME
-        value: Zomato_Clone
+      - fromGroup: goblin-shared-secrets
