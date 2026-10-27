@@ -6,6 +6,10 @@ export const publishPaymentSuccess = async (payload: {
   provider: "razorpay" | "stripe";
 }) => {
   const channel = getChannel();
+  if (!channel) {
+    console.warn("⚠️ RabbitMQ channel not available. Skipping publishPaymentSuccess.");
+    return;
+  }
 
   channel.sendToQueue(
     process.env.PAYMENT_QUEUE!,
