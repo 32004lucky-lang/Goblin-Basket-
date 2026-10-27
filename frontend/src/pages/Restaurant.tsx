@@ -8,7 +8,6 @@ import MenuItems from "../components/MenuItems";
 import AddMenuItem from "../components/AddMenuItem";
 import RestaurantOrders from "../components/RestaurantOrders";
 import { VscLoading } from "react-icons/vsc";
-import { useSocket } from "../context/SocketContext";
 
 type SellerTab = "menu" | "add-item" | "sales";
 
