@@ -102,12 +102,10 @@ const RestaurantOrders = ({ restaurantId }: { restaurantId: string }) => {
     // order:new fires when a new paid order arrives
     socket.on("order:update", onUpdateOrder);
     socket.on("order:rider_assigned", onUpdateOrder);
-    socket.on("order:new", onNewOrder);
 
     return () => {
       socket.off("order:update", onUpdateOrder);
       socket.off("order:rider_assigned", onUpdateOrder);
-      socket.off("order:new", onNewOrder);
     };
   }, [socket, audioUnlocked]);
 

@@ -28,6 +28,11 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   async function fetchUser() {
     try {
       const token = localStorage.getItem("token");
+      
+      if (!token) {
+        setLoading(false);
+        return;
+      }
 
       const { data } = await axios.get(`${authService}/api/auth/me`, {
         headers: {
