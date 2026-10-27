@@ -1,7 +1,7 @@
 # ==============================================================================
 # Goblin Basket - Render Infrastructure as Code (render.yaml)
 # ==============================================================================
-# Auto-wires shared environment groups, ports, and internal routing.
+# Uses rootDir per service so Dockerfile and context resolve correctly.
 # ==============================================================================
 
 envVarGroups:
@@ -31,9 +31,9 @@ services:
   - type: web
     name: goblin-basket-frontend
     runtime: static
+    rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    rootDir: frontend
     routes:
       - type: rewrite
         source: /*
@@ -80,8 +80,9 @@ services:
   - type: web
     name: goblin-basket-auth
     runtime: docker
-    dockerfilePath: services/auth/Dockerfile
-    dockerContext: services/auth
+    rootDir: services/auth
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
@@ -93,8 +94,9 @@ services:
   - type: web
     name: goblin-basket-restaurant
     runtime: docker
-    dockerfilePath: services/restaurant/Dockerfile
-    dockerContext: services/restaurant
+    rootDir: services/restaurant
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
@@ -116,8 +118,9 @@ services:
   - type: web
     name: goblin-basket-utils
     runtime: docker
-    dockerfilePath: services/utils/Dockerfile
-    dockerContext: services/utils
+    rootDir: services/utils
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
@@ -147,8 +150,9 @@ services:
   - type: web
     name: goblin-basket-realtime
     runtime: docker
-    dockerfilePath: services/realtime/Dockerfile
-    dockerContext: services/realtime
+    rootDir: services/realtime
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
@@ -160,8 +164,9 @@ services:
   - type: web
     name: goblin-basket-rider
     runtime: docker
-    dockerfilePath: services/rider/Dockerfile
-    dockerContext: services/rider
+    rootDir: services/rider
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
@@ -188,8 +193,9 @@ services:
   - type: web
     name: goblin-basket-admin
     runtime: docker
-    dockerfilePath: services/admin/Dockerfile
-    dockerContext: services/admin
+    rootDir: services/admin
+    dockerfilePath: Dockerfile
+    dockerContext: .
     envVars:
       - key: PORT
         value: 10000
