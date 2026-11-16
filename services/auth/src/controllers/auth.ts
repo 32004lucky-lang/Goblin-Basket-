@@ -17,7 +17,15 @@ export const registerUser = TryCatch(async (req, res) => {
 
   const cleanEmail = email.toLowerCase().trim();
 
-  const existingUser = await User.findOne({ email: cleanEmail });
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: cleanEmail });
+  } catch (dbErr: any) {
+    console.error("Database error during user registration:", dbErr);
+    return res.status(503).json({
+      message: "Database connection unavailable. Please check MongoDB configuration and Network Access in Atlas.",
+    });
+  }
   if (existingUser) {
     return res.status(400).json({
       message: "User with this email already exists. Please log in.",

@@ -12,11 +12,11 @@ const connectDB = async () => {
     try {
       if (rawUri.startsWith("mongodb+srv://") || rawUri.startsWith("mongodb://")) {
         const parts = rawUri.split("@");
-        if (parts.length === 2) {
+        if (parts.length === 2 && parts[0] && parts[1]) {
           const authPart = parts[0].replace(/^mongodb(\+srv)?:\/\//, "");
           const [user, ...pwdParts] = authPart.split(":");
           const pwd = pwdParts.join(":");
-          if (pwd && !pwd.includes("%")) {
+          if (user && pwd && !pwd.includes("%")) {
             const prefix = rawUri.startsWith("mongodb+srv://") ? "mongodb+srv://" : "mongodb://";
             formattedUri = `${prefix}${encodeURIComponent(decodeURIComponent(user))}:${encodeURIComponent(decodeURIComponent(pwd))}@${parts[1]}`;
           }
@@ -29,6 +29,7 @@ const connectDB = async () => {
     await mongoose.connect(formattedUri, {
       dbName: process.env.DB_NAME || "Zomato_Clone",
       serverSelectionTimeoutMS: 5000,
+      bufferCommands: false,
     });
 
     console.log("connected to mongodb");
