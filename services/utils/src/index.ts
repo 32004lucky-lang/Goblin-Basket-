@@ -8,8 +8,6 @@ import { connectRabbitMQ } from "./config/rabbitmq.js";
 
 dotenv.config();
 
-connectRabbitMQ();
-
 const app = express();
 
 app.use(cors());
@@ -38,7 +36,7 @@ if (hasRealCloudinaryKeys) {
 }
 
 // Health check — required by Render
-app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "utils" }));
+app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "utils", uptime: process.uptime(), timestamp: new Date().toISOString() }));
 
 app.use("/api", uploadRoutes);
 app.use("/api/payment", paymentRoutes);
@@ -47,4 +45,7 @@ const PORT = process.env.PORT || 5002;
 
 app.listen(PORT, () => {
   console.log(`Utils service is running on port ${PORT}`);
+  connectRabbitMQ().catch((err) => {
+    console.warn("⚠️ RabbitMQ not connected on startup (utils):", err?.message || err);
+  });
 });

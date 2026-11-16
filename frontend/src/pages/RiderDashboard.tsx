@@ -37,9 +37,36 @@ const RiderDashboard = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audioRef.current = new Audio(audio);
-    audioRef.current.preload = "auto";
-  }, []);
+    try {
+      audioRef.current = new Audio(audio);
+      audioRef.current.preload = "auto";
+    } catch {
+      // Audio not supported in this environment
+    }
+
+    const handleFirstInteraction = () => {
+      if (audioRef.current && !audioUnlocked) {
+        audioRef.current.play().then(() => {
+          audioRef.current!.pause();
+          audioRef.current!.currentTime = 0;
+          setAudioUnlocked(true);
+        }).catch(() => {});
+      }
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction);
+    window.addEventListener("keydown", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+  }, [audioUnlocked]);
 
   const unlockAudio = async () => {
     try {

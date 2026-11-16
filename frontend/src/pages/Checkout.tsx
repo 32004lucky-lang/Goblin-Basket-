@@ -121,7 +121,7 @@ const Checkout = () => {
 
       const { razorpayOrderId, key } = data;
 
-      if (key?.includes("your") || razorpayOrderId?.startsWith("mock")) {
+      if (!key || key?.includes("your") || key?.includes("placeholder") || razorpayOrderId?.startsWith("mock")) {
         setMockPaymentMethod("razorpay");
         setMockOrderId(orderId);
         setMockAmount(amount || grandTotal);
@@ -177,7 +177,9 @@ const Checkout = () => {
 
       const { orderId, amount } = order;
 
-      const isPlaceholder = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.includes("your");
+      const isPlaceholder = !import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ||
+        import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.includes("your") ||
+        import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY?.includes("placeholder");
 
       if (isPlaceholder) {
         setMockPaymentMethod("stripe");

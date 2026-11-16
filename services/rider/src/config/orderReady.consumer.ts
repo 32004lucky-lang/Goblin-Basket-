@@ -2,6 +2,8 @@ import axios from "axios";
 import { getChannel } from "./rabbitmq.js";
 import { Rider } from "../model/Rider.js";
 
+const processedOrderEvents = new Set<string>();
+
 export const startOrderReadyConsumer = async () => {
   const channel = getChannel();
   if (!channel) {
@@ -10,6 +12,13 @@ export const startOrderReadyConsumer = async () => {
   }
 
   console.log("Starting to consume from:", process.env.ORDER_READY_QUEUE);
+
+  // Set prefetch to distribute work evenly across consumers
+  try {
+    await channel.prefetch(1);
+  } catch (err) {
+    console.warn("Could not set prefetch on channel:", err);
+  }
 
   channel.consume(process.env.ORDER_READY_QUEUE!, async (msg) => {
     if (!msg) return;
@@ -28,6 +37,17 @@ export const startOrderReadyConsumer = async () => {
       }
 
       const { orderId, restaurantId, location } = event.data;
+
+      // Idempotency check: prevent duplicate notifications for the same order dispatch cycle
+      const eventKey = `${orderId}_${location?.coordinates?.join(",") || ""}`;
+      if (processedOrderEvents.has(eventKey)) {
+        console.log(`Order ${orderId} already processed by this consumer instance, skipping.`);
+        channel.ack(msg);
+        return;
+      }
+      processedOrderEvents.add(eventKey);
+      // Clean up set after 10 minutes to avoid memory leak
+      setTimeout(() => processedOrderEvents.delete(eventKey), 10 * 60 * 1000);
 
       console.log("Searching for rider near:", location);
 

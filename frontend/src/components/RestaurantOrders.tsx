@@ -24,9 +24,39 @@ const RestaurantOrders = ({ restaurantId }: { restaurantId: string }) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    audioRef.current = new Audio(audio);
-    audioRef.current.load();
-  }, []);
+    try {
+      audioRef.current = new Audio(audio);
+      audioRef.current.load();
+    } catch {
+      // Audio not supported in this environment
+    }
+
+    // Auto-unlock on first user interaction anywhere on the window
+    const handleFirstInteraction = () => {
+      if (audioRef.current && !audioUnlocked) {
+        audioRef.current.play().then(() => {
+          audioRef.current!.pause();
+          audioRef.current!.currentTime = 0;
+          setAudioUnlocked(true);
+        }).catch(() => {
+          // Ignore interaction failures
+        });
+      }
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+
+    window.addEventListener("click", handleFirstInteraction);
+    window.addEventListener("keydown", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+  }, [audioUnlocked]);
 
   const unlockAudio = () => {
     if (audioRef.current) {

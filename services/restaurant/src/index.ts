@@ -12,18 +12,8 @@ import { startPaymentConsumer } from "./config/payment.consumer.js";
 
 dotenv.config();
 
-await connectRabbitMQ();
-startPaymentConsumer();
-
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-const PORT = process.env.PORT || 5001;
-
 // Health check — required by Render
-app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "restaurant" }));
+app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "restaurant", uptime: process.uptime(), timestamp: new Date().toISOString() }));
 
 app.use("/api/restaurant", restaurantRoutes);
 app.use("/api/item", itemRoutes);
@@ -31,7 +21,14 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/address", addressRoutes);
 app.use("/api/order", orderRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Restaurant service is running on port ${PORT}`);
-  connectDB();
+  await connectDB();
+  connectRabbitMQ()
+    .then(() => {
+      startPaymentConsumer();
+    })
+    .catch((err) => {
+      console.warn("⚠️ RabbitMQ not connected on startup:", err?.message || err);
+    });
 });

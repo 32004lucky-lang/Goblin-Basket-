@@ -53,6 +53,12 @@ export const verifyRazorpayPayment = async (req: Request, res: Response) => {
     orderId,
   } = req.body;
 
+  if (!orderId) {
+    return res.status(400).json({
+      message: "orderId is required for payment verification",
+    });
+  }
+
   const isValid = verifyRazorpaySignature(
     razorpay_order_id,
     razorpay_payment_id,

@@ -8,19 +8,23 @@ import { startOrderReadyConsumer } from "./config/orderReady.consumer.js";
 
 dotenv.config();
 
-await connectRabbitMQ();
-startOrderReadyConsumer();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 // Health check — required by Render
-app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "rider" }));
+app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "rider", uptime: process.uptime(), timestamp: new Date().toISOString() }));
 
 app.use("/api/rider", riderRoutes);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, async () => {
   console.log(`Rider service is running on port ${process.env.PORT}`);
-  connectDB();
+  await connectDB();
+  connectRabbitMQ()
+    .then(() => {
+      startOrderReadyConsumer();
+    })
+    .catch((err) => {
+      console.warn("⚠️ RabbitMQ not connected on startup:", err?.message || err);
+    });
 });
