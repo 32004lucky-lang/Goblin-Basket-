@@ -10,14 +10,14 @@ export const connectDb = async (): Promise<Db> => {
   let formattedUri = rawUri;
   try {
     if (rawUri.startsWith("mongodb+srv://") || rawUri.startsWith("mongodb://")) {
-      const parts = rawUri.split("@");
-      if (parts.length === 2) {
-        const authPart = parts[0].replace(/^mongodb(\+srv)?:\/\//, "");
+      const [left, right] = rawUri.split("@");
+      if (left && right && rawUri.split("@").length === 2) {
+        const authPart = left.replace(/^mongodb(\+srv)?:\/\//, "");
         const [user, ...pwdParts] = authPart.split(":");
         const pwd = pwdParts.join(":");
-        if (pwd && !pwd.includes("%")) {
+        if (user && pwd && !pwd.includes("%")) {
           const prefix = rawUri.startsWith("mongodb+srv://") ? "mongodb+srv://" : "mongodb://";
-          formattedUri = `${prefix}${encodeURIComponent(decodeURIComponent(user))}:${encodeURIComponent(decodeURIComponent(pwd))}@${parts[1]}`;
+          formattedUri = `${prefix}${encodeURIComponent(decodeURIComponent(user))}:${encodeURIComponent(decodeURIComponent(pwd))}@${right}`;
         }
       }
     }
