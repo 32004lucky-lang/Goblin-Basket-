@@ -80,6 +80,7 @@ services:
   - type: web
     name: goblin-basket-auth
     runtime: docker
+    plan: free
     rootDir: services/auth
     dockerfilePath: Dockerfile
     dockerContext: .
@@ -94,6 +95,7 @@ services:
   - type: web
     name: goblin-basket-restaurant
     runtime: docker
+    plan: free
     rootDir: services/restaurant
     dockerfilePath: Dockerfile
     dockerContext: .
@@ -118,6 +120,7 @@ services:
   - type: web
     name: goblin-basket-utils
     runtime: docker
+    plan: free
     rootDir: services/utils
     dockerfilePath: Dockerfile
     dockerContext: .
@@ -150,6 +153,7 @@ services:
   - type: web
     name: goblin-basket-realtime
     runtime: docker
+    plan: free
     rootDir: services/realtime
     dockerfilePath: Dockerfile
     dockerContext: .
@@ -164,6 +168,7 @@ services:
   - type: web
     name: goblin-basket-rider
     runtime: docker
+    plan: free
     rootDir: services/rider
     dockerfilePath: Dockerfile
     dockerContext: .
@@ -193,6 +198,7 @@ services:
   - type: web
     name: goblin-basket-admin
     runtime: docker
+    plan: free
     rootDir: services/admin
     dockerfilePath: Dockerfile
     dockerContext: .
