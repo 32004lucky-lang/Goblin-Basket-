@@ -25,54 +25,6 @@ envVarGroups:
         value: Zomato_Clone
 
 services:
-  # ─────────────────────────────────────────────
-  # FRONTEND (Static Site)
-  # ─────────────────────────────────────────────
-  - type: web
-    name: goblin-basket-frontend
-    runtime: static
-    rootDir: frontend
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: VITE_AUTH_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-auth
-          property: host
-      - key: VITE_RESTAURANT_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-restaurant
-          property: host
-      - key: VITE_UTILS_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-utils
-          property: host
-      - key: VITE_REALTIME_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-realtime
-          property: host
-      - key: VITE_RIDER_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-rider
-          property: host
-      - key: VITE_ADMIN_SERVICE
-        fromService:
-          type: web
-          name: goblin-basket-admin
-          property: host
-      - key: VITE_INTERNAL_SERVICE_KEY
-        value: gb_sec_9d3e8f7a1b4c6e2d5f0a8c1e4b7a9d2f6c8e1a3b5d7f
-      - key: VITE_STRIPE_PUBLISHABLE_KEY
-        value: pk_test_placeholder
 
   # ─────────────────────────────────────────────
   # AUTH SERVICE
