@@ -8,7 +8,7 @@ envVarGroups:
   - name: goblin-shared-secrets
     envVars:
       - key: MONGO_URI
-        value: mongodb+srv://32004lucky_db_user:password_here@cluster0.c3ernby.mongodb.net/goblin_basket?retryWrites=true&w=majority
+        value: mongodb+srv://project:peoject123@cluster0.hekgfjt.mongodb.net/goblin_basket?retryWrites=true&w=majority
       - key: RABBITMQ_URL
         value: amqps://dwioqrcw:LjJHIMLR_AR7W1zSSb3GMI0cb6gxD5jc@warthog.lmq.cloudamqp.com/dwioqrcw
       - key: JWT_SEC
