@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { AppProvider } from "./context/AppContext.tsx";
 import { SocketProvider } from "./context/SocketContext.tsx";
 import ConnectionStatus from "./components/ConnectionStatus.tsx";
+import "./lib/axiosRetry.ts";
 
 export const authService = import.meta.env.VITE_AUTH_SERVICE || "http://localhost:5000";
 export const restaurantService = import.meta.env.VITE_RESTAURANT_SERVICE || "http://localhost:5001";
@@ -12,6 +13,12 @@ export const utilsService = import.meta.env.VITE_UTILS_SERVICE || "http://localh
 export const realtimeService = import.meta.env.VITE_REALTIME_SERVICE || "http://localhost:5004";
 export const riderService = import.meta.env.VITE_RIDER_SERVICE || "http://localhost:5005";
 export const adminService = import.meta.env.VITE_ADMIN_SERVICE || "http://localhost:5006";
+
+// Wake up all Render free-tier services on app load
+const services = [authService, restaurantService, utilsService, realtimeService, riderService, adminService];
+services.forEach((url) => {
+  fetch(url, { method: "GET", mode: "cors" }).catch(() => {});
+});
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
