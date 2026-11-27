@@ -12,6 +12,11 @@ import { startPaymentConsumer } from "./config/payment.consumer.js";
 
 dotenv.config();
 
+const app = express();
+app.use(cors());
+app.use(express.json());
+const PORT = process.env.PORT || 5001;
+
 // Health check — required by Render
 app.get("/", (_req, res) => res.status(200).json({ status: "ok", service: "restaurant", uptime: process.uptime(), timestamp: new Date().toISOString() }));
 
